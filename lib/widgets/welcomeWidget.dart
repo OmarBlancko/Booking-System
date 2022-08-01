@@ -1,9 +1,15 @@
+import 'package:bookingsystem/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/guest_provider.dart';
 class WelcomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
+    // final userData = Provider.of<NewUser>(context).signedUser;
+
     return Container(
       width: deviceSize.width * .94,
       height: deviceSize.height * .19,
@@ -20,9 +26,10 @@ class WelcomeWidget extends StatelessWidget {
         children: <Widget>[
           Row(
             children: [
+
               FittedBox(
                 child: Text(
-                  'Hi Guest,',
+                  'Hi ',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.primary,

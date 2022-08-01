@@ -34,7 +34,7 @@ class RoomView extends StatelessWidget {
       // ),
       child: Container(
         margin: EdgeInsets.only(bottom: size.getHeight(10)),
-        width: size.getWidth(370),
+        width: size.getWidth(360),
         height: size.getHeight(290),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -118,7 +118,7 @@ class RoomView extends StatelessWidget {
                               Text(roomStatus == 1 ? 'Reserved' : 'Available',style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xffffffff),
-                                  fontSize: size.getWidth(16)
+                                  fontSize: size.getWidth(15)
                               ),),
 
                             ],
@@ -146,11 +146,12 @@ class RoomView extends StatelessWidget {
             if (roomStatus == 0)
               Container(
                 padding: EdgeInsets.only(top: size.getHeight(10)),
-                height: size.getHeight(40),
+                height: size.getHeight(50),
                 width: double.infinity,
                 child: TextButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(0)),
+                    // backgroundColor: MaterialStateProperty.all(Colors.green),
                   ),
                   onPressed: () {
                     roomId=roomNumber;
@@ -160,7 +161,7 @@ class RoomView extends StatelessWidget {
                     'Book Now',
                     style: TextStyle(
                         color: Colors.greenAccent, fontWeight: FontWeight.bold,
-                        fontSize: size.getWidth(23),
+                        fontSize: size.getWidth(20),
                     fontFamily: 'OpenSans'),
                   ),
                 ),

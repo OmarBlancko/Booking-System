@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 class Guest  {
   late final String guestId;
@@ -14,6 +15,5 @@ class Guest  {
       required this.email,
       this.reservationNumber})
       ;
-
 }
 

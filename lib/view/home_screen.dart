@@ -24,7 +24,6 @@ class _ViewScreenState extends State<ViewScreen> {
 
   /// tahrir 1 giza 2 tagmoo 3
   String dropDownValue = 'Tahrir';
-  @override
  // h = 835.6 , w = 392.7
   @override
   Widget build(BuildContext context) {
@@ -46,10 +45,12 @@ class _ViewScreenState extends State<ViewScreen> {
       //               }),
       //           IconButton(
       //               icon: Icon(
-      //                 Icons.message,
+      //                 Icons.home,
       //                 color: Theme.of(context).colorScheme.secondary,
       //               ),
-      //               onPressed: () {}),
+      //               onPressed: () {
+      //                 Navigator.of(context).pushNamed(ViewScreen.routeName);
+      //               }),
       //         ],
       //       ),
       //     );

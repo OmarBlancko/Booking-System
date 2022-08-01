@@ -2,6 +2,7 @@ import 'package:bookingsystem/models/http_exceptions.dart';
 import 'package:bookingsystem/provider/auth.dart';
 import 'package:bookingsystem/provider/guest_provider.dart';
 import 'package:bookingsystem/view/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -94,14 +95,16 @@ class _AuthScreenState extends State<AuthScreen> {
         if (_authMode == AuthMode.signUp) {
           await Provider.of<Authentication>(context, listen: false)
               .signUp(_guestData['email']!, _guestData['password']!)
-              .then((value) {})
               .then((value) async {
             await Provider.of<NewUser>(context, listen: false)
                 .registerUser(_guestData);
           });
         } else {
           await Provider.of<Authentication>(context, listen: false)
-              .login(_guestData['email']!, _guestData['password']!);
+              .login(_guestData['email']!, _guestData['password']!)
+              .then((value) async{
+                  await Provider.of<NewUser>(context,listen: false).fetchUserData();
+          });
         }
         Navigator.of(context).pushReplacementNamed(ViewScreen.routeName);
       } on HttpException catch (error) {
@@ -122,9 +125,11 @@ class _AuthScreenState extends State<AuthScreen> {
           errorMessage =
               'This E-mail is not registered, please signup and try again!';
         }
-        ScaffoldMessenger.of(context).showSnackBar(getSnackBar(errorMessage));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(getSnackBar("another type " + errorMessage));
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(getSnackBar(e.toString()));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(getSnackBar("customer error \n" + e.toString()));
       }
       setState(() {
         _isLoading = false;
@@ -290,6 +295,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         margin: fieldMargin,
                         decoration: containerDecoration,
                         child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
                           focusNode: _emailFocusNode,
                           maxLines: 1,
                           onFieldSubmitted: (_) {
@@ -368,7 +374,9 @@ class _AuthScreenState extends State<AuthScreen> {
                               // hintText: 'Enter first name',
                             ),
                             style: labelTextStyle,
-                            onChanged: (val) {},
+                            onChanged: (val) {
+
+                            },
                           ),
                         ),
                       ),
@@ -412,7 +420,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                     SizedBox(
-                      height:size.getHeight(8),
+                      height: size.getHeight(8),
                     ),
                     if (_isLoading)
                       CircularIndicator()
@@ -429,7 +437,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.secondary,
-                                  fontSize: size.getWidth(16) ,
+                                  fontSize: size.getWidth(16),
                                   fontWeight: FontWeight.bold),
                             ),
                             onPressed: _switchAuthMode,

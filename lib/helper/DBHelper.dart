@@ -22,7 +22,7 @@ class DBHelper {
     return _database1;
   }
    initializeDatabase() async {
-    print('initialize');
+    // print('initialize');
     var dbDir = await sql.getDatabasesPath();
     var dbPath = path.join(dbDir, "app.db");
     try {

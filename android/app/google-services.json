@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "579441653258",
+    "firebase_url": "https://bookingsystem-33e33-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "bookingsystem-33e33",
+    "storage_bucket": "bookingsystem-33e33.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:579441653258:android:65c597cf06c9e873e8d1f3",
+        "android_client_info": {
+          "package_name": "com.example.bookingsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "579441653258-odghpvfkad0jlldsc4mu0i7g11qdvj3s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2lMFp7CnWaRHHnUT8oNDMnweqGeLGBRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "579441653258-odghpvfkad0jlldsc4mu0i7g11qdvj3s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

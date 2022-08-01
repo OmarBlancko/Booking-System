@@ -5,6 +5,7 @@ import 'package:bookingsystem/view/auth_screen.dart';
 import 'package:bookingsystem/view/cart_screen.dart';
 import 'package:bookingsystem/view/reservation_form_screen.dart';
 import 'package:bookingsystem/view/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -19,11 +20,11 @@ import 'package:bookingsystem/helper/custom_route.dart';
   Size  getSize(BuildContext context) {
   return MediaQuery.of(context).size;
 }
-void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
+var userIdentification;
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
   runApp(MyApp());
 }
 
@@ -62,6 +63,18 @@ class MyApp extends StatelessWidget {
                 ),
                 // primarySwatch: Colors.red,
               ),
+          //     home: FutureBuilder(
+          //       future:   Firebase.initializeApp(),
+          //       builder: (context,snapshot) {
+          //         if(snapshot.hasError)
+          //           return CircularProgressIndicator(color: Colors.red,);
+          //         else if(snapshot.connectionState == ConnectionState.done) {
+          //           return Splash();
+          //         }
+          //         else
+          //         return CircularProgressIndicator(color: Colors.green,);
+          // },
+          //     ),
               routes: {
                 '/': (ctx) => Splash(),
                 ViewScreen.routeName:(ctx) => ViewScreen(),

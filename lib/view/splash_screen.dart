@@ -1,10 +1,16 @@
+import 'package:bookingsystem/main.dart';
+import 'package:bookingsystem/models/guest.dart';
 import 'package:bookingsystem/provider/auth.dart';
+import 'package:bookingsystem/provider/guest_provider.dart';
 import 'package:bookingsystem/view/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bookingsystem/helper/DBHelper.dart';
 import 'package:provider/provider.dart';
 class Splash extends StatefulWidget {
+  static const routeName = '/splashScreen';
+
   @override
   State<Splash> createState() => _SplashState();
 }
@@ -16,24 +22,28 @@ class _SplashState extends State<Splash> {
     super.initState();
     _navigateToHome();
   }
-
+_verifiedUser() async {
+    await Provider.of<NewUser>(context,listen: false).getUserData();
+  Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (context) => ViewScreen())).then((value)  {
+  });
+}
   _navigateToHome() async {
     await DBHelper.instance.initializeDatabase();
     await Future.delayed(
       Duration(
-        seconds: 1,
+        seconds: 0,
       ),
       () {},
     );
     bool result = await Provider.of<Authentication>(context,listen: false).tryAutoLogin();
-    result?
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => ViewScreen())).then((value) {
-      print('auth');
-    }):
+
+    result == true ?
+    _verifiedUser()
+        :
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => AuthScreen())).then((value) {
-      print('not auth');
+      // print('not auth');
     });
   }
 

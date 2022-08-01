@@ -1,21 +1,20 @@
-// ignore_for_file: unused_local_variable
-
+import 'package:bookingsystem/main.dart';
+import 'package:bookingsystem/view/auth_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+// import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:bookingsystem/models/http_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Authentication with ChangeNotifier {
-  static const _apiKey = 'AIzaSyAzwRER4Me3NaN7AkrznAnnZUXMWzd98j8';
+  // static const _apiKey = 'AIzaSyAzwRER4Me3NaN7AkrznAnnZUXMWzd98j8';
 
   String? _token;
   String? _userId;
   DateTime? _expiryDate;
   Authentication();
-  // @override
-  // Authentication._privateConstructor();
-  // final Authentication authInstance = new Authentication._privateConstructor();
+
   String? get token {
     if (_expiryDate != null && _token != null) {
       return _token;
@@ -33,37 +32,31 @@ class Authentication with ChangeNotifier {
   }
 
   bool get isAuth {
-
     if (token == null) {
       return false;
     } else {
-
       return true;
     }
   }
 
-  Future<void> _authenticate(
-      String email, String password, String urlSegment) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$_apiKey';
+  final authInstance = FirebaseAuth.instance;
+  UserCredential? userCredential;
+
+  Future<void> authUser(String email, String password, AuthMode auth) async {
     try {
-      final response = await http.post(Uri.parse(url),
-          body: json.encode({
-            'email': email,
-            'password': password,
-            'returnSecureToken': true,
-          }));
-      final responseData = await json.decode(response.body);
-      if (responseData['error'] != null) {
-        throw HttpException(responseData['error']['message']);
+      if (auth == AuthMode.login) {
+        userCredential = await authInstance.signInWithEmailAndPassword(
+            email: email, password: password);
+      } else {
+        userCredential = await authInstance.createUserWithEmailAndPassword(
+            email: email, password: password);
       }
-      print(responseData['idToken']);
-      _token = responseData['idToken'];
-      _userId = responseData['localId'];
-      _expiryDate = DateTime.now()
-          .add(Duration(seconds: int.parse(responseData['expiresIn'])));
+      _userId = userCredential!.user!.uid;
+      _token = await userCredential!.user!.getIdToken();
+      userIdentification = userCredential!.user!.uid;
+      print(_token);
+      print(userIdentification);
       isAuth;
-      print(isAuth);
       notifyListeners();
 
       /// to store user data on device
@@ -71,37 +64,55 @@ class Authentication with ChangeNotifier {
       final userData = json.encode({
         'token': _token,
         'userId': _userId,
-        'expiryDate': _expiryDate?.toIso8601String(),
+        'email': email,
+        'password': password,
       });
-      print(userData);
+      // print(userData);
       prefs.setString('userData', userData);
-    } catch (error) {
-      throw (error);
+    } on PlatformException catch (error) {
+      var message = 'an error occurs please check your credential';
+      if (error.message != null) {
+        message = error.message!;
+      }
+      print(error.toString());
+    } on FirebaseAuthException catch (e) {
+      print("Firebase error >>" + e.message.toString());
+    } catch (err) {
+      print("Error " + err.toString());
     }
   }
 
+
+
   Future<void> signUp(String email, String password) async {
-    return _authenticate(email, password, 'signUp');
+    return authUser(email, password, AuthMode.signUp);
   }
 
   Future<void> login(String email, String password) async {
-    return _authenticate(email, password, 'signInWithPassword');
+    return authUser(email, password, AuthMode.login);
   }
 
   Future<bool> tryAutoLogin() async {
+
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       return false;
     }
     final _extractedData =
         json.decode(prefs.getString('userData') ?? '') as Map<String, dynamic>;
-    // final expiryDate = DateTime.parse(extractedData['expiryDate']);  //  i don't want to sign out what ever happened
-    // if(expiryDate.isBefore(DateTime.now())) {
-    //   return false;
-    // }
-    print('try auto login');
-    _token = _extractedData['idToken'];
-    _userId = _extractedData['localId'];
+
+    final email = _extractedData['email'];
+    final password = _extractedData['password'];
+
+    if (email == null && password == null) {
+      return false;
+    }
+    final UserCredential? loginResponse = await authInstance
+        .signInWithEmailAndPassword(email: email, password: password);
+    if (loginResponse!.user?.uid == null) {
+      return false;
+    } else
+      userIdentification = loginResponse.user!.uid;
     return true;
   }
 
@@ -112,6 +123,8 @@ class Authentication with ChangeNotifier {
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('userData');
+    prefs.remove('guestInfo');
+    prefs.clear();
   }
 }
 /*
@@ -132,3 +145,42 @@ class Authentication with ChangeNotifier {
       }
       _showErrorDialog(errorMessage)  ;
   */
+// Future<void> _authenticate(
+//     String email, String password, String urlSegment) async {
+//   final url =
+//       'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$_apiKey';
+//   try {
+//     final response = await http.post(Uri.parse(url),
+//         body: json.encode({
+//           'email': email,
+//           'password': password,
+//           'returnSecureToken': true,
+//         }));
+//     final responseData = await json.decode(response.body);
+//     if (responseData['error'] != null) {
+//       throw HttpException(responseData['error']['message']);
+//     }
+//     print(responseData['localId']);
+//     _token = responseData['idToken'];
+//     _userId = responseData['localId'];
+//     userIdentification = responseData['localId'];
+//     print(userIdentification);
+//     _expiryDate = DateTime.now()
+//         .add(Duration(seconds: int.parse(responseData['expiresIn'])));
+//     isAuth;
+//     print(isAuth);
+//     notifyListeners();
+//
+//     /// to store user data on device
+//     final prefs = await SharedPreferences.getInstance();
+//     final userData = json.encode({
+//       'token': _token,
+//       'userId': _userId,
+//       'expiryDate': _expiryDate?.toIso8601String(),
+//     });
+//     // print(userData);
+//     prefs.setString('userData', userData);
+//   } catch (error) {
+//     throw (error);
+//   }
+// }
