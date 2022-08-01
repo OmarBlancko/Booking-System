@@ -1,6 +1,10 @@
 # bookingsystem
 
-booking system assignment
+Booking system by flutter 
+- Provider state management
+- Sqlite offline database
+- Firebase and firestore 
+- Custom transition animation 
 
 ## Getting Started
 
