@@ -5,6 +5,7 @@ Booking system by flutter
 - Sqlite offline database
 - Firebase and firestore 
 - Custom transition animation 
+- ERD for database 
 
 ## Getting Started
 
